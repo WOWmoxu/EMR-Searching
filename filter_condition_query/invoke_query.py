@@ -12,10 +12,48 @@
 '''
 
 from connection_neo4j import connection_neo4j
-from parse_condition import get_condition, parse_condition
+from parse_condition import parse_nc
 
-condition_str = '[{"necessary_condition":{"all":{"姓名":[],"性别":[],"年龄":[],"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}},{"sufficient_condition":{"all":{"姓名":[],"性别":[],"年龄":[],"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}}]'
 
-graph = connection_neo4j()
-condition_object = get_condition(condition_str)
+def query_nc():
+    """
+    必要条件查询
+    :return:
+    """
+    all_conditions, zs_conditions, xbs_conditions = parse_nc()
+    query_all(all_conditions)
 
+
+def query_all(all_conditions):
+    """
+    解析查询必要条件
+    :param necessary_condition:
+    :return:
+    """
+    # 拼接SQL
+    head_sql = "MATCH "
+    tail_sql = "WHERE "
+
+    # 遍历条件字典
+    for key, value in all_conditions.items():
+        if key == '姓名':
+            sql_part = 'm_r.name=' + value[0]
+        elif key == '性别':
+            sql_part = '(m_r:medical_record)-[:肯定关系]->(xb:cxbmc),'
+            sql_part2 = 'xb.name=' + value[0]
+        elif key == '年龄':
+            sql_part = 'm_r.age_year' + value[0]
+        elif key == '否定症状':
+            for content in value:
+                sql_part = '(m_r:medical_record)-[:否定关系]->(sys:symptoms_node),'
+                sql_part2 = ''
+
+
+def query_sc(sufficient_condition):
+    """
+    解析查询充分条件
+    :param sufficient_condition:
+    :return:
+    """
+
+query_nc()

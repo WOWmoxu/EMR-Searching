@@ -13,7 +13,7 @@
 
 import demjson
 
-condition_str = '[{"necessary_condition":{"all":{"姓名":[],"性别":["男"],"年龄":[],"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}},{"sufficient_condition":{"all":{"姓名":[],"性别":[],"年龄":[],"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}}]'
+condition_str = '[{"necessary_condition":{"all":{"姓名":[],"性别":["男"],"年龄":[">50"],"否定症状":[["发热"],["冒冷汗"],["打寒战"]],"否定疾病":["发烧"],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":["板蓝根"],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":["脑震荡"],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":["布洛芬"]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}},{"sufficient_condition":{"all":{"姓名":[],"性别":[],"年龄":[],"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]},"zs":{"时间":[],"肯定症状":[],"否定症状":[],"部位对应症状":[]},"xbs":{"否定症状":[],"否定疾病":[],"否定手术治疗":[],"否定非手术治疗":[],"否定药品":[],"科室":[],"部位对应症状":[],"精神特征对应结果":[],"生理特征对应结果":[],"生理指标对应数量":[],"肯定症状":[["头痛"],["头晕"],["恶心"],["呕吐"]],"肯定疾病":[],"肯定手术治疗":[],"肯定非手术治疗":[],"肯定药品名":[]}}}]'
 
 
 def get_condition(condition_str):
@@ -44,37 +44,22 @@ condition_object = get_condition(condition_str)
 necessary_condition, sufficient_condition = parse_condition(condition_object)
 
 
-def parse_nc(necessary_condition):
+def parse_nc():
     """
     解析必要条件
     :param necessary_condition:
     :return:
     """
-    all = necessary_condition['all']
-    zs = necessary_condition['zs']
-    xbs = necessary_condition['xbs']
+    all = necessary_condition['all']  # 全域条件
+    zs = necessary_condition['zs']  # 主诉条件
+    xbs = necessary_condition['xbs']  # 现病史条件
 
+    # 获取过滤后的条件
     all_conditions = filter_condition(all)
     zs_conditions = filter_condition(zs)
     xbs_conditions = filter_condition(xbs)
 
-
-def query_nc(necessary_condition):
-    """
-    解析查询必要条件
-    :param necessary_condition:
-    :return:
-    """
-    parse_nc(necessary_condition)
-
-
-
-def query_sc(sufficient_condition):
-    """
-    解析查询充分条件
-    :param sufficient_condition:
-    :return:
-    """
+    return all_conditions, zs_conditions, xbs_conditions
 
 
 def filter_condition(condition):
@@ -85,12 +70,12 @@ def filter_condition(condition):
     """
     result_condition = dict()
 
-    for key,value in condition.items():
+    for key, value in condition.items():
         if value != []:
             result_condition[key] = value
 
     return result_condition
 
 
-if __name__ == "__main__":
-    condition_object = query_nc(necessary_condition)
+# if __name__ == "__main__":
+#     condition_object = query_nc(necessary_condition)
