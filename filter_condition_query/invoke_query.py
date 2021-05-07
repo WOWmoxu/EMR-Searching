@@ -44,8 +44,8 @@ def query_all(all_conditions):
         elif key == '年龄':
             sql_part = 'm_r.age_year' + value[0]
         elif key == '否定症状':
-            for content in value:
-                sql_part = '(m_r:medical_record)-[:否定关系]->(sys:symptoms_node),'
+            for i,content in enumerate(value):
+                sql_part = '(m_r:medical_record)-[:否定关系]->(sys%s:symptoms_node),'%i
                 sql_part2 = ''
 
 
