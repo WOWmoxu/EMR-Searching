@@ -87,7 +87,8 @@ def query_all(all_conditions):
         elif key == '生理指标对应数值':
             # *********
             for i, content in enumerate(value):
-
+                p_i_name = physiological_indicators_dict(content[0])
+                sql_part = "(m_r:medical_record)-[:肯定关系]->(%s:physiological_indicators_node)"%p_i_name[1:]
                 pass
         elif key == '肯定症状':
             for i, content in enumerate(value):
@@ -119,5 +120,23 @@ def query_sc(sufficient_condition):
     :return:
     """
 
+def physiological_indicators_dict(p_i_name):
+    """
+    生理指标对应数值字典
+    :param p_i_name:
+    :return:
+    """
+    p_i_dict={
+        '身高':'nsg',
+        '体重':'ntz',
+        '体温':'ntw',
+        '呼吸频率':'nhxpl',
+        '脉率':'nml',
+        '收缩压':'nssy',
+        '舒张压':'nszy'
+    }
+
+    p_i_value = p_i_dict[p_i_name]
+    return p_i_value
 
 query_nc()
